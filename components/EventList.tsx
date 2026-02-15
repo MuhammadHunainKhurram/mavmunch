@@ -15,12 +15,12 @@ export function EventList({ events, hasFilters }: EventListProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {events.map((event, index) => (
         <div
           key={event.id}
           style={{
-            animation: `slideUp 0.5s ease-out ${index * 30}ms both`,
+            animation: `slideUp 0.4s ease-out ${index * 30}ms both`,
           }}
         >
           <EventListItem event={event as any} index={index} />

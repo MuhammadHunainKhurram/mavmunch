@@ -2,20 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
 
 @layer base {
   * {
-    @apply border-slate-200;
+    @apply border-warm-200;
   }
-  
+
+  .dark * {
+    @apply border-warm-800;
+  }
+
   html {
     @apply antialiased;
     scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply bg-slate-50 text-slate-900 font-sans;
+    @apply bg-warm-50 text-warm-900 font-sans dark:bg-warm-950 dark:text-warm-100;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
@@ -24,32 +28,179 @@
   .text-balance {
     text-wrap: balance;
   }
-  
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-orange to-brand-rose;
+
+  /* College ruled paper background */
+  .ruled-paper {
+    background-color: #FAF7F2;
+    background-image:
+      linear-gradient(transparent 31px, #E0CDCA 31px, #E0CDCA 32px, transparent 32px),
+      linear-gradient(90deg, transparent 59px, #C8D9E8 59px, #C8D9E8 60px, transparent 60px);
+    background-size: 100% 32px, 100% 100%;
+    background-attachment: local;
   }
-  
-  .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-medium;
+
+  .dark .ruled-paper {
+    background-color: #1C1917;
+    background-image:
+      linear-gradient(transparent 31px, #332E2A 31px, #332E2A 32px, transparent 32px),
+      linear-gradient(90deg, transparent 59px, #252F38 59px, #252F38 60px, transparent 60px);
+  }
+
+  /* Sticky note card — base */
+  .sticky-note {
+    @apply relative transition-all duration-200;
+    border-radius: 2px;
+    box-shadow:
+      2px 3px 8px rgb(42 37 32 / 0.12),
+      1px 1px 2px rgb(42 37 32 / 0.06);
+  }
+
+  .sticky-note::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0.04), transparent);
+    border-radius: 2px 2px 0 0;
+    pointer-events: none;
+  }
+
+  .sticky-note:hover {
+    transform: translateY(-2px) rotate(0deg) !important;
+    box-shadow:
+      3px 6px 16px rgb(42 37 32 / 0.18),
+      1px 2px 4px rgb(42 37 32 / 0.08);
+  }
+
+  /* Sticky note colors — light */
+  .sticky-yellow  { background: #FFF9C4; }
+  .sticky-orange  { background: #FFE0B2; }
+  .sticky-pink    { background: #F8BBD0; }
+  .sticky-blue    { background: #BBDEFB; }
+  .sticky-green   { background: #C8E6C9; }
+  .sticky-purple  { background: #E1BEE7; }
+
+  /* Sticky note colors — dark (muted) */
+  .dark .sticky-yellow  { background: #33311D; }
+  .dark .sticky-orange  { background: #332816; }
+  .dark .sticky-pink    { background: #331A28; }
+  .dark .sticky-blue    { background: #162633; }
+  .dark .sticky-green   { background: #1A2B1C; }
+  .dark .sticky-purple  { background: #281A30; }
+
+  .dark .sticky-note {
+    box-shadow:
+      2px 3px 8px rgb(0 0 0 / 0.3),
+      1px 1px 2px rgb(0 0 0 / 0.15);
+  }
+  .dark .sticky-note:hover {
+    box-shadow:
+      3px 6px 16px rgb(0 0 0 / 0.4),
+      1px 2px 4px rgb(0 0 0 / 0.2);
+  }
+  .dark .sticky-note::before {
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.03), transparent);
+  }
+
+  /* Tape strip decoration (centered on top of card) */
+  .tape-strip::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 60px;
+    height: 18px;
+    border-radius: 2px;
+    background: rgba(255 255 255 / 0.5);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    pointer-events: none;
+  }
+  .dark .tape-strip::after {
+    background: rgba(255 255 255 / 0.06);
+  }
+
+  .card-campus {
+    @apply bg-white rounded-2xl border border-warm-200 shadow-soft
+           dark:bg-warm-900 dark:border-warm-800 dark:shadow-none
+           transition-all duration-200;
+  }
+
+  .card-campus-hover {
+    @apply card-campus hover:-translate-y-0.5 hover:shadow-medium
+           dark:hover:bg-warm-800/80;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5
+           bg-campus-orange text-white font-semibold rounded-xl
+           shadow-warm hover:shadow-warm-lg hover:bg-campus-orange-dark
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-campus-orange focus-visible:ring-offset-2
+           dark:focus-visible:ring-offset-warm-950
+           active:scale-[0.98] transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+           bg-warm-100 text-warm-700 font-medium rounded-xl
+           hover:bg-warm-200
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-campus-orange focus-visible:ring-offset-2
+           dark:bg-warm-800 dark:text-warm-300 dark:hover:bg-warm-700
+           dark:focus-visible:ring-offset-warm-950
+           active:scale-[0.98] transition-all duration-200;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-full;
+  }
+
+  .section-heading {
+    @apply font-display text-2xl sm:text-3xl font-bold text-warm-900 dark:text-warm-100 tracking-tight;
+  }
+
+  .section-subheading {
+    @apply text-sm text-warm-500 dark:text-warm-400 mt-1;
+  }
+
+  /* Warm skeleton pulse */
+  .skeleton-warm {
+    @apply bg-warm-200/60 dark:bg-warm-800/60 animate-pulse-warm rounded-xl;
   }
 }
 
 ::selection {
-  @apply bg-brand-orange text-white;
+  @apply bg-campus-orange/20 text-campus-orange-dark;
+}
+
+.dark ::selection {
+  @apply bg-campus-orange/30 text-campus-orange-light;
 }
 
 ::-webkit-scrollbar {
-  @apply w-3;
+  @apply w-2.5;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-100 rounded-full;
+  @apply bg-warm-100 dark:bg-warm-900;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gradient-to-b from-brand-orange to-brand-rose rounded-full border-2 border-slate-100;
+  @apply bg-warm-300 dark:bg-warm-700 rounded-full border-2 border-warm-100 dark:border-warm-900;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply from-brand-orange-dark to-rose-600;
+  @apply bg-warm-400 dark:bg-warm-600;
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

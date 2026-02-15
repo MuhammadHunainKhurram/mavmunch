@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { EventCard } from './EventCard';
 import { MavEngageEvent } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
-import { Zap, Calendar, Sparkles } from 'lucide-react';
+import { Zap, Calendar } from 'lucide-react';
 
 interface FeaturedEventsProps {
   allEvents: (MavEngageEvent | SubmittedEvent)[];
@@ -75,35 +75,34 @@ export function FeaturedEvents({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {happeningNow.length > 0 && (
-        <section className="relative">
-          <div className="absolute -inset-4 bg-gradient-to-r from-brand-orange/5 to-brand-rose/5 rounded-3xl -z-10" />
-          
+        <section>
           <div className="flex items-center gap-3 mb-6">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-orange to-brand-rose rounded-2xl flex items-center justify-center shadow-colored animate-pulse-slow">
-                <Zap className="w-6 h-6 text-white fill-current" />
-              </div>
-              <Sparkles className="absolute -top-2 -right-2 w-5 h-5 text-brand-yellow" />
+            <div className="w-10 h-10 bg-campus-orange rounded-xl flex items-center justify-center shadow-warm">
+              <Zap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                Happening Now!
+              <h2 className="section-heading text-xl sm:text-2xl">
+                Happening Now
               </h2>
-              <p className="text-sm font-semibold text-slate-500">
-                Starting within 2 hours • Don't miss out!
+              <p className="section-subheading">
+                Starting within 2 hours
               </p>
             </div>
+            <span className="ml-auto relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-campus-orange opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-campus-orange"></span>
+            </span>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
             {happeningNow.map((event, index) => {
               const eventId = isApiEvent(event) ? event.id : event.id;
               return (
-                <EventCard 
-                  key={eventId || index} 
-                  event={event as MavEngageEvent} 
+                <EventCard
+                  key={eventId || index}
+                  event={event as MavEngageEvent}
                   featured={true}
                   colorIndex={index}
                 />
@@ -116,25 +115,25 @@ export function FeaturedEvents({
       {todayEvents.length > 0 && happeningNow.length === 0 && (
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-blue to-brand-purple rounded-2xl flex items-center justify-center shadow-soft">
-              <Calendar className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-campus-blue rounded-xl flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                Today @ UTA
+              <h2 className="section-heading text-xl sm:text-2xl">
+                Today on Campus
               </h2>
-              <p className="text-sm font-semibold text-slate-500">
+              <p className="section-subheading">
                 Free food events happening today
               </p>
             </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
             {todayEvents.map((event, index) => {
               const eventId = isApiEvent(event) ? event.id : event.id;
               return (
-                <EventCard 
-                  key={eventId || index} 
+                <EventCard
+                  key={eventId || index}
                   event={event as MavEngageEvent}
                   colorIndex={index + 2}
                 />

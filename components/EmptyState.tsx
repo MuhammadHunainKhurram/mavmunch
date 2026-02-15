@@ -6,34 +6,35 @@ interface EmptyStateProps {
 
 export function EmptyState({ hasFilters }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4 text-center">
-      <div className="text-6xl sm:text-7xl mb-6 animate-bounce" style={{ animationDuration: '2s' }}>
-        🔍
+    <div className="flex flex-col items-center justify-center py-16 sm:py-20 px-4 text-center">
+      <div className="w-20 h-20 bg-warm-100 dark:bg-warm-800 rounded-2xl flex items-center justify-center mb-6">
+        <span className="text-4xl" role="img" aria-label="search">
+          {hasFilters ? '🔍' : '🍕'}
+        </span>
       </div>
 
       {hasFilters ? (
         <>
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-slate-900 mb-2">
-            No events found
+          <h2 className="font-display text-2xl font-bold text-warm-900 dark:text-warm-100 mb-2">
+            Nothing matches your search
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base max-w-md mb-8">
-            Try adjusting your filters or check back later for more free food events!
+          <p className="text-warm-500 dark:text-warm-400 max-w-sm mb-8 leading-relaxed">
+            Try different keywords or remove some filters to see more events.
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-soft hover:shadow-medium active:scale-95"
+            className="btn-primary"
           >
-            Clear Filters
+            Clear filters
           </button>
         </>
       ) : (
         <>
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-slate-900 mb-2">
-            No free food events yet
+          <h2 className="font-display text-2xl font-bold text-warm-900 dark:text-warm-100 mb-2">
+            Nothing cooking right now
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base max-w-md">
-            Check back soon! Organizations are always planning their next free food event.
-            Keep refreshing! 🍕
+          <p className="text-warm-500 dark:text-warm-400 max-w-sm leading-relaxed">
+            Check back soon — orgs are always planning something. Free food pops up when you least expect it!
           </p>
         </>
       )}

@@ -22,7 +22,7 @@ import {
 } from '@/lib/utils';
 import { MavEngageEvent, SortOption } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
-import { Trophy, List, Sparkles, Utensils } from 'lucide-react';
+import { Trophy, ChevronDown, Utensils } from 'lucide-react';
 
 type AnyEvent = MavEngageEvent | SubmittedEvent;
 
@@ -56,10 +56,17 @@ export default function Home() {
       setLoading(true);
       setError(null);
 
+      // Wrap each call with a timeout so hanging Firebase calls don't block forever
+      const withTimeout = <T,>(promise: Promise<T>, ms: number, fallback: T): Promise<T> =>
+        Promise.race([
+          promise,
+          new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+        ]);
+
       const [api, submitted, past] = await Promise.all([
-        getFreeFoodEvents(60),
-        getApprovedSubmittedEvents(60),
-        getPastSubmittedEvents(12),
+        withTimeout(getFreeFoodEvents(60), 10000, []),
+        withTimeout(getApprovedSubmittedEvents(60), 10000, []),
+        withTimeout(getPastSubmittedEvents(12), 10000, []),
       ]);
 
       setApiEvents(api);
@@ -85,8 +92,8 @@ export default function Home() {
       const query = searchQuery.toLowerCase();
       result = result.filter((event: AnyEvent) => {
         const name = getEventName(event);
-        const org = event.organizationName;
-        const location = event.location;
+        const org = event.organizationName ?? '';
+        const location = event.location ?? '';
         const description = getEventDescription(event);
 
         return (
@@ -110,16 +117,10 @@ export default function Home() {
   const hasFilters = selectedOrgs.length > 0 || searchQuery.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-brand-orange/10 rounded-full blur-3xl" />
-        <div className="absolute top-40 -left-20 w-60 h-60 bg-brand-blue/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-20 w-96 h-96 bg-brand-purple/5 rounded-full blur-3xl" />
-      </div>
-
+    <div className="min-h-screen ruled-paper">
       <Header eventCount={allEvents.length} />
-      
-      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+      <main className="relative max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {error ? (
           <ErrorState message={error} onRetry={handleRetry} />
         ) : loading ? (
@@ -128,38 +129,40 @@ export default function Home() {
           <div className="space-y-10">
             <FeaturedEvents allEvents={allEvents} />
 
-            <div className="bg-white rounded-3xl p-6 shadow-soft border-2 border-slate-100">
+            {/* Search + Filter + Sort — notebook style */}
+            <div className="sticky-note sticky-yellow p-5 sm:p-6 space-y-5">
               <SearchBar onSearch={setSearchQuery} />
-              
-              <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pt-6 border-t-2 border-slate-100">
+
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-warm-200 dark:border-warm-800">
                 <FilterBar
                   organizations={organizationsWithCounts}
                   selectedOrgs={selectedOrgs}
                   onFilterChange={setSelectedOrgs}
                 />
-                
+
                 <SortControls currentSort={sortBy} onSortChange={setSortBy} />
               </div>
 
               {hasFilters && (
-                <div className="mt-4 flex items-center gap-2 text-sm font-bold text-slate-500">
-                  <Sparkles className="w-4 h-4 text-brand-yellow" />
-                  Showing <span className="text-brand-orange text-lg">{filteredEvents.length}</span> of{' '}
-                  <span className="text-slate-900">{allEvents.length}</span> events
-                </div>
+                <p className="text-sm text-warm-500 dark:text-warm-400">
+                  Showing <span className="font-semibold text-campus-orange">{filteredEvents.length}</span> of{' '}
+                  <span className="font-semibold text-warm-900 dark:text-warm-100">{allEvents.length}</span> events
+                </p>
               )}
             </div>
 
+            {/* Leaderboard toggle */}
             <button
               onClick={() => setShowLeaderboard(!showLeaderboard)}
-              className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-sm font-bold transition-all duration-300 ${
-                showLeaderboard 
-                  ? 'bg-slate-200 text-slate-700' 
-                  : 'bg-gradient-to-r from-brand-orange to-brand-rose text-white shadow-colored hover:shadow-lg hover:scale-[1.02]'
+              className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-campus-orange focus-visible:ring-offset-2 dark:focus-visible:ring-offset-warm-950 ${
+                showLeaderboard
+                  ? 'btn-secondary'
+                  : 'btn-primary'
               }`}
             >
-              {showLeaderboard ? <List className="w-4 h-4" /> : <Trophy className="w-4 h-4" />}
-              {showLeaderboard ? 'Hide Leaderboard' : 'View Leaderboard 🏆'}
+              <Trophy className="w-4 h-4" />
+              {showLeaderboard ? 'Hide leaderboard' : 'View leaderboard'}
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showLeaderboard ? 'rotate-180' : ''}`} />
             </button>
 
             {showLeaderboard && (
@@ -170,21 +173,22 @@ export default function Home() {
               />
             )}
 
+            {/* All Events */}
             <section>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center shadow-soft">
-                  <Utensils className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 bg-warm-900 dark:bg-warm-100 rounded-xl flex items-center justify-center">
+                  <Utensils className="w-5 h-5 text-white dark:text-warm-900" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-                    All Events
+                  <h2 className="section-heading text-xl sm:text-2xl">
+                    Upcoming Free Food
                   </h2>
-                  <p className="text-sm font-semibold text-slate-500">
-                    Every free food opportunity on campus
+                  <p className="section-subheading">
+                    Don&apos;t miss out on these
                   </p>
                 </div>
               </div>
-              
+
               <EventList
                 events={filteredEvents as MavEngageEvent[]}
                 hasFilters={hasFilters}
@@ -194,35 +198,25 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="relative mt-20 border-t-2 border-slate-200 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-brand-orange to-brand-rose rounded-2xl flex items-center justify-center shadow-colored rotate-3 hover:rotate-6 transition-transform duration-300">
-                <svg viewBox="0 0 24 24" className="w-8 h-8 text-white" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
+      <footer className="relative mt-16 border-t border-warm-300/50 dark:border-warm-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-campus-orange rounded-lg flex items-center justify-center">
+                <span className="text-lg" role="img" aria-label="pizza">🍕</span>
               </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-brand-yellow rounded-full flex items-center justify-center text-xs animate-bounce">
-                🍕
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-2xl font-black text-slate-900 mb-1">
-                Mav<span className="text-brand-orange">Munch</span>
+              <h3 className="text-lg font-bold text-warm-900 dark:text-warm-100">
+                Mav<span className="text-campus-orange">Munch</span>
               </h3>
-              <p className="text-slate-500 font-medium">
-                Never miss free food at UTA again!
-              </p>
             </div>
-            
-            <div className="flex items-center gap-2 px-4 py-2 bg-brand-blue-soft rounded-full">
-              <span className="w-2 h-2 bg-brand-blue rounded-full animate-pulse" />
-              <span className="text-sm font-bold text-brand-blue-dark">
-                Made with hunger by ACM @ UTA
-              </span>
-            </div>
+
+            <p className="text-sm text-warm-500 dark:text-warm-400 max-w-xs">
+              Never miss free food at UTA again.
+            </p>
+
+            <p className="text-xs text-warm-400 dark:text-warm-500">
+              Made with hunger by ACM @ UTA
+            </p>
           </div>
         </div>
       </footer>
