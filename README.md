@@ -1,6 +1,3 @@
-Here's the updated README.md with all the changes we've made:
-
-```markdown
 # 🍕 MavMunch - Find Free Food at UTA
 
 A web application that helps UTA students discover free food events on campus by parsing MavEngage's discovery API and displaying them in a beautiful, easy-to-use interface.
