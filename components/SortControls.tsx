@@ -33,7 +33,7 @@ export function SortControls({ currentSort, onSortChange }: SortControlsProps) {
               }`}
             >
               {icon}
-              <span className="hidden sm:inline">{label}</span>
+              <span>{label}</span>
             </button>
           );
         })}
