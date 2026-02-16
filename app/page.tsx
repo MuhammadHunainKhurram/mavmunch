@@ -10,6 +10,7 @@ import { FeaturedEvents } from '@/components/FeaturedEvents';
 import { Leaderboard } from '@/components/Leaderboard';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { ErrorState } from '@/components/ErrorState';
+import { DisclaimerModal } from '@/components/DisclaimerModal';
 import { getFreeFoodEvents } from '@/lib/api';
 import {
   getApprovedSubmittedEvents,
@@ -22,7 +23,7 @@ import {
 } from '@/lib/utils';
 import { MavEngageEvent, SortOption } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
-import { Trophy, ChevronDown, Utensils } from 'lucide-react';
+import { Trophy, ChevronDown, Calendar, X } from 'lucide-react';
 
 type AnyEvent = MavEngageEvent | SubmittedEvent;
 
@@ -56,7 +57,6 @@ export default function Home() {
       setLoading(true);
       setError(null);
 
-      // Wrap each call with a timeout so hanging Firebase calls don't block forever
       const withTimeout = <T,>(promise: Promise<T>, ms: number, fallback: T): Promise<T> =>
         Promise.race([
           promise,
@@ -113,27 +113,61 @@ export default function Home() {
     fetchEvents();
   }, [fetchEvents]);
 
+  const handleRemoveOrg = (org: string) => {
+    setSelectedOrgs(selectedOrgs.filter((o) => o !== org));
+  };
+
   const organizationsWithCounts = getOrganizationsWithCounts(allEvents as any);
   const hasFilters = selectedOrgs.length > 0 || searchQuery.trim().length > 0;
 
   return (
-    <div className="min-h-screen ruled-paper">
+    <div className="min-h-screen relative">
+      <DisclaimerModal />
       <Header eventCount={allEvents.length} />
 
-      <main className="relative max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {error ? (
           <ErrorState message={error} onRetry={handleRetry} />
         ) : loading ? (
           <LoadingSkeleton />
         ) : (
-          <div className="space-y-10">
+          <div className="space-y-8">
+            {/* Featured Alert */}
             <FeaturedEvents allEvents={allEvents} />
 
-            {/* Search + Filter + Sort — notebook style */}
-            <div className="sticky-note sticky-yellow p-5 sm:p-6 space-y-5">
+            {/* Filter chips at top - wider */}
+            {selectedOrgs.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {selectedOrgs.map((org) => (
+                  <span
+                    key={org}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-uta-orange/10 text-uta-orange-dark dark:bg-uta-orange/20 dark:text-uta-orange text-sm font-semibold rounded-xl max-w-[300px]"
+                  >
+                    <span className="truncate leading-tight" style={{ 
+                      display: '-webkit-box', 
+                      WebkitLineClamp: 2, 
+                      WebkitBoxOrient: 'vertical',
+                      whiteSpace: 'normal',
+                      wordBreak: 'break-word'
+                    }}>
+                      {org}
+                    </span>
+                    <button
+                      onClick={() => handleRemoveOrg(org)}
+                      className="w-5 h-5 flex items-center justify-center rounded hover:bg-uta-orange/20 transition-colors flex-shrink-0"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Search & Controls */}
+            <div className="card-modern p-5 sm:p-6 space-y-5">
               <SearchBar onSearch={setSearchQuery} />
 
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-warm-200 dark:border-warm-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-warm-200 dark:border-warm-800">
                 <FilterBar
                   organizations={organizationsWithCounts}
                   selectedOrgs={selectedOrgs}
@@ -144,20 +178,20 @@ export default function Home() {
               </div>
 
               {hasFilters && (
-                <p className="text-sm text-warm-500 dark:text-warm-400">
-                  Showing <span className="font-semibold text-campus-orange">{filteredEvents.length}</span> of{' '}
-                  <span className="font-semibold text-warm-900 dark:text-warm-100">{allEvents.length}</span> events
+                <p className="text-sm text-warm-500 dark:text-warm-400 pt-2">
+                  Showing <span className="font-bold text-uta-orange">{filteredEvents.length}</span> of{' '}
+                  <span className="font-bold text-warm-900 dark:text-warm-100">{allEvents.length}</span> events
                 </p>
               )}
             </div>
 
-            {/* Leaderboard toggle */}
+            {/* Leaderboard Toggle */}
             <button
               onClick={() => setShowLeaderboard(!showLeaderboard)}
-              className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-campus-orange focus-visible:ring-offset-2 dark:focus-visible:ring-offset-warm-950 ${
+              className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 showLeaderboard
-                  ? 'btn-secondary'
-                  : 'btn-primary'
+                  ? 'bg-warm-100 dark:bg-warm-800 text-warm-700 dark:text-warm-300'
+                  : 'bg-uta-orange text-white shadow-orange hover:bg-uta-orange-dark'
               }`}
             >
               <Trophy className="w-4 h-4" />
@@ -173,49 +207,46 @@ export default function Home() {
               />
             )}
 
-            {/* All Events */}
+            {/* Events List with Time Grouping */}
             <section>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-warm-900 dark:bg-warm-100 rounded-xl flex items-center justify-center">
-                  <Utensils className="w-5 h-5 text-white dark:text-warm-900" />
+                <div className="w-10 h-10 bg-uta-blue rounded-xl flex items-center justify-center shadow-blue">
+                  <Calendar className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="section-heading text-xl sm:text-2xl">
-                    Upcoming Free Food
+                  <h2 className="text-xl sm:text-2xl font-bold text-warm-900 dark:text-warm-100">
+                    All Events
                   </h2>
-                  <p className="section-subheading">
-                    Don&apos;t miss out on these
-                  </p>
                 </div>
               </div>
 
               <EventList
-                events={filteredEvents as MavEngageEvent[]}
+                events={filteredEvents}
                 hasFilters={hasFilters}
+                sortBy={sortBy}
               />
             </section>
           </div>
         )}
       </main>
 
-      <footer className="relative mt-16 border-t border-warm-300/50 dark:border-warm-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      {/* Footer - neutral text */}
+      <footer className="relative z-10 mt-20 border-t border-warm-200 dark:border-warm-800 bg-white/50 dark:bg-warm-950/50 backdrop-blur-sm">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-campus-orange rounded-lg flex items-center justify-center">
-                <span className="text-lg" role="img" aria-label="pizza">🍕</span>
+              <div className="w-10 h-10 bg-uta-orange rounded-xl flex items-center justify-center shadow-orange">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 text-white" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
               </div>
-              <h3 className="text-lg font-bold text-warm-900 dark:text-warm-100">
-                Mav<span className="text-campus-orange">Munch</span>
+              <h3 className="text-xl font-bold text-warm-900 dark:text-warm-100">
+                Mav<span className="text-uta-orange">Munch</span>
               </h3>
             </div>
 
-            <p className="text-sm text-warm-500 dark:text-warm-400 max-w-xs">
-              Never miss free food at UTA again.
-            </p>
-
-            <p className="text-xs text-warm-400 dark:text-warm-500">
-              Made with hunger by ACM @ UTA
+            <p className="text-sm text-warm-500 dark:text-warm-400 max-w-sm">
+              Never miss free food at UTA again. <br></br>Made with care by ACM @ UTA.
             </p>
           </div>
         </div>

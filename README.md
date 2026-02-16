@@ -1,23 +1,33 @@
+Here's the updated README.md with all the changes we've made:
+
+```markdown
 # 🍕 MavMunch - Find Free Food at UTA
 
-A web application that helps UTA students discover free food events on campus by parsing MavEngage's discovery API.
+A web application that helps UTA students discover free food events on campus by parsing MavEngage's discovery API and displaying them in a beautiful, easy-to-use interface.
 
 ## Features
 
 ✨ **Core Features:**
-- **Real-time Event Discovery** - Automatically fetches free food events from MavEngage for the next 30 days
+- **Real-time Event Discovery** - Automatically fetches free food events from MavEngage for the next 60 days
 - **Smart Filtering** - Filter events by organization with event counts
 - **Flexible Sorting** - Sort by date (soonest/latest), organization name, or event name
+- **Time-Based Grouping** - Events automatically grouped by Today, Tomorrow, This Week, This Month, and Later (when sorted by date)
+- **Days Until Badge** - Shows "Today", "Tomorrow", or "In X days" for each event
 - **Responsive Design** - Beautiful, mobile-first design that works on all devices
 - **Direct Links** - One-click access to full event details on MavEngage
+- **Dark Mode** - Toggle between light and dark themes
+- **Disclaimer Modal** - First-time visitor notice about event accuracy
+- **Pizza Cursor** - Custom 🍕 cursor that follows your mouse (rotated 180°)
 
 ## Tech Stack
 
 - **Framework:** Next.js 14 with App Router
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
+- **State Management:** React useState/useEffect
 - **Deployment:** Vercel
 - **API:** MavEngage Discovery API
+- **Database:** Firebase (for submitted events)
 
 ## Getting Started
 
@@ -27,7 +37,7 @@ A web application that helps UTA students discover free food events on campus by
 
 ### Installation
 
-1. **Download the project files**
+1. **Clone or download the project files**
 
 2. **Install dependencies**
    ```bash
@@ -89,29 +99,70 @@ npm start
 
 ```
 mavmunch/
-├── app/                 # Pages and layout
-├── components/          # React components
-├── lib/                 # Utilities and API
-├── package.json         # Dependencies
-├── tsconfig.json        # TypeScript config
-├── tailwind.config.ts   # Tailwind configuration
-└── README.md            # This file
+├── app/                    # Pages and layout
+│   ├── globals.css         # Global styles & pizza cursor
+│   ├── layout.tsx          # Root layout with ThemeProvider
+│   └── page.tsx            # Main page component
+├── components/             # React components
+│   ├── DisclaimerModal.tsx # First-time visitor disclaimer
+│   ├── EmptyState.tsx      # Empty state illustration
+│   ├── EventCard.tsx       # Individual event card
+│   ├── EventList.tsx       # Time-grouped event list
+│   ├── FeaturedEvents.tsx  # "Happening Now" alert
+│   ├── FilterBar.tsx       # Organization filter (top overlay)
+│   ├── FloatingFoodBackground.tsx # (deprecated - returns null)
+│   ├── Header.tsx          # App header with logo
+│   ├── Leaderboard.tsx     # Most active orgs leaderboard
+│   ├── LoadingSkeleton.tsx # Loading state skeleton
+│   ├── SearchBar.tsx       # Search input
+│   ├── SortControls.tsx    # Sort option buttons
+│   └── ThemeProvider.tsx   # Dark/light mode context
+├── lib/                    # Utilities and API
+│   ├── api.ts              # MavEngage API calls
+│   ├── dateUtils.ts        # Date grouping utilities
+│   ├── firebaseService.ts  # Firebase integration
+│   ├── firebaseTypes.ts    # TypeScript types for Firebase
+│   ├── types.ts            # TypeScript types
+│   └── utils.ts            # Helper functions
+├── package.json            # Dependencies
+├── tsconfig.json           # TypeScript config
+├── tailwind.config.ts      # Tailwind configuration
+└── README.md               # This file
 ```
+
+## Design System
+
+### Colors
+- **UTA Orange:** `#f97316` - Primary actions, accents
+- **UTA Blue:** `#3e84f6` - Secondary accents, alternating cards
+- **Neutral Grays:** Warm gray palette for text and backgrounds
+
+### Key UI Elements
+- **Event Cards:** Horizontal list layout with colored left border (orange/blue alternating)
+- **Time Badges:** Show "Today", "Tomorrow", or "In X days"
+- **Filter Dropdown:** Full-width overlay at top of screen
+- **Section Dividers:** Sticky headers for time groups (Today, Tomorrow, etc.)
 
 ## Environment Variables
 
-No environment variables required! This MVP works directly with public APIs.
+No environment variables required for basic operation! This MVP works directly with public APIs.
+
+Optional: Set up Firebase for submitted events feature.
 
 ## Testing Checklist
 
 - [x] Events load correctly from API
 - [x] Filter by organization works
 - [x] Sort options work correctly
+- [x] Time grouping appears only when sorted by date
+- [x] Days until badge displays correctly
+- [x] Dark mode toggle works
+- [x] Disclaimer modal shows on first visit
 - [x] Responsive on mobile, tablet, desktop
 - [x] Links open correctly
 - [x] Empty state displays when needed
 - [x] Error handling in place
-- [x] Date range is 30 days from current time
+- [x] Date range is 60 days from current time
 
 ## Troubleshooting
 
@@ -130,17 +181,24 @@ No environment variables required! This MVP works directly with public APIs.
 - Run `npm install` again
 - Try `npm run build`
 
+## Changelog
+
+### Recent Updates
+- **Removed:** Sticky note card design, pastel colors, food emoji backgrounds
+- **Added:** Time-based event grouping, days until badges, pizza cursor, dark mode
+- **Changed:** New blue color (#3e84f6), list-style cards, top-positioned filter dropdown
+- **Improved:** Better mobile responsiveness, more neutral UI elements
+
 ## Future Features
 
 - 🗺️ **Map View** - Show event locations on an interactive map
-- 📊 **Leaderboard** - Track which organizations host the most free food events
-- 📅 **Calendar View** - Alternative calendar-based event display
-- 🔔 **Notifications** - Email/SMS alerts for new events
-- 👤 **User Accounts** - Save favorite organizations and personalized recommendations
+- 📧 **Notifications** - Email alerts for new events from favorite orgs
+- 👤 **User Accounts** - Save favorite organizations
+- 📱 **PWA** - Install as mobile app
 
 ## License
 
-Created for UTA students. Built with ❤️.
+Created for UTA students. Built with ❤️ by ACM @ UTA.
 
 ## Support
 
@@ -155,3 +213,4 @@ npm run dev
 ```
 
 Happy eating! 🎉
+```
