@@ -3,7 +3,7 @@
 import { MavEngageEvent } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
 import { formatDate, formatTime, getMavEngageUrl } from '@/lib/utils';
-import { MapPin, ArrowUpRight, Flame, Clock } from 'lucide-react';
+import { MapPin, ArrowUpRight, Flame } from 'lucide-react';
 
 type EventType = MavEngageEvent | SubmittedEvent;
 
@@ -56,7 +56,6 @@ export function EventListItem({ event, index = 0 }: EventListItemProps) {
   const hoursUntil = Math.floor((startDateTime.getTime() - now.getTime()) / (1000 * 60 * 60));
   const isUrgent = isUpcoming && hoursUntil >= 0 && hoursUntil <= 24;
 
-  // Alternate between orange and blue accents
   const isOrange = index % 2 === 0;
 
   return (
@@ -67,7 +66,6 @@ export function EventListItem({ event, index = 0 }: EventListItemProps) {
       className="group block card-uta-hover"
     >
       <div className="flex items-stretch">
-        {/* Time column */}
         <div className={`flex-shrink-0 w-24 sm:w-28 p-4 sm:p-5 flex flex-col justify-center border-r border-warm-200 dark:border-warm-800 ${
           isOrange ? 'bg-uta-orange-light dark:bg-uta-orange/5' : 'bg-uta-blue-light dark:bg-uta-blue/5'
         }`}>
@@ -95,11 +93,9 @@ export function EventListItem({ event, index = 0 }: EventListItemProps) {
           )}
         </div>
 
-        {/* Content */}
         <div className="flex-1 p-4 sm:p-5 min-w-0">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              {/* Meta */}
               <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span className={`text-xs font-bold uppercase tracking-wider ${
                   isOrange ? 'text-uta-blue' : 'text-uta-orange'
@@ -111,19 +107,16 @@ export function EventListItem({ event, index = 0 }: EventListItemProps) {
                 </span>
               </div>
 
-              {/* Title */}
               <h3 className="text-base sm:text-lg font-bold text-warm-900 dark:text-warm-100 group-hover:text-uta-orange transition-colors line-clamp-2 mb-2 leading-snug">
                 {eventName}
               </h3>
 
-              {/* Location */}
               <div className="flex items-center gap-1.5 text-sm text-warm-500 dark:text-warm-400">
                 <MapPin className="w-3.5 h-3.5" />
                 <span className="truncate">{event.location}</span>
               </div>
             </div>
 
-            {/* Arrow */}
             <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-warm-100 dark:bg-warm-800 text-warm-400 group-hover:bg-uta-orange group-hover:text-white transition-all flex-shrink-0">
               <ArrowUpRight className="w-5 h-5" />
             </div>
