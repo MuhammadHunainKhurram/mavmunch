@@ -126,13 +126,11 @@ export function EventList({ events, hasFilters, sortBy }: EventListProps) {
               <div className="flex-1 h-px bg-warm-200 dark:border-warm-800" />
             </div>
 
-            {/* Events List */}
             <div className="space-y-4">
               {groupEvents.map((event, index) => (
                 <EventCard 
                   key={event.id || index} 
                   event={event} 
-                  featured={key === 'today' && index === 0}
                   index={index}
                 />
               ))}
