@@ -53,11 +53,10 @@ function getDaysUntil(event: EventType): string {
 
 interface EventCardProps {
   event: EventType;
-  featured?: boolean;
   index?: number;
 }
 
-export function EventCard({ event, featured = false, index = 0 }: EventCardProps) {
+export function EventCard({ event, index = 0 }: EventCardProps) {
   const eventName = getEventName(event);
   const eventOrg = event.organizationName;
   const eventDate = getEventDate(event);
