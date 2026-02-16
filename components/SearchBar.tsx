@@ -13,7 +13,6 @@ export function SearchBar({
   placeholder = 'Search events, organizations...',
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,8 +38,6 @@ export function SearchBar({
         type="text"
         value={query}
         onChange={handleChange}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
         className="w-full pl-12 pr-12 py-4 bg-warm-50 dark:bg-warm-900 border-2 border-warm-200 dark:border-warm-700 rounded-2xl text-warm-900 dark:text-warm-100 placeholder:text-warm-400 font-medium focus:outline-none focus:border-uta-orange focus:ring-4 focus:ring-uta-orange/10 transition-all duration-200"
       />
