@@ -76,32 +76,27 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
       className="group block card-modern overflow-hidden hover:shadow-medium transition-all duration-300"
     >
       <div className="flex items-stretch">
-        {/* Left accent bar */}
         <div className={`flex-shrink-0 w-3 sm:w-4 ${
           isOrange 
             ? 'bg-gradient-to-b from-uta-orange to-uta-orange-dark' 
             : 'bg-gradient-to-b from-uta-blue to-uta-blue-dark'
         }`} />
 
-        {/* Content - More compact */}
         <div className="flex-1 p-4 sm:p-5 min-w-0">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              {/* Organization - matches bar color */}
               <p className={`text-xs font-bold uppercase tracking-wider mb-1.5 ${
                 isOrange ? 'text-uta-orange' : 'text-uta-blue'
               }`}>
                 {eventOrg}
               </p>
 
-              {/* Title - hover matches bar color */}
               <h3 className={`text-base sm:text-lg font-bold text-warm-900 dark:text-warm-100 transition-colors line-clamp-2 mb-2 leading-snug ${
                 isOrange ? 'group-hover:text-uta-orange' : 'group-hover:text-uta-blue'
               }`}>
                 {eventName}
               </h3>
 
-              {/* Meta row - compact */}
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg font-semibold text-xs ${
                   isOrange 
@@ -117,26 +112,17 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
                   {eventDate}
                 </span>
 
-                {/* Days until badge */}
-                <span className={`inline-flex items-center px-2 py-1 rounded-lg font-bold text-xs text-white ${
-                  daysUntil === 'Today' 
-                    ? 'bg-uta-orange' 
-                    : daysUntil === 'Tomorrow'
-                    ? 'bg-uta-blue'
-                    : 'bg-warm-500'
-                }`}>
+                <span className={`inline-flex items-center px-2 py-1 rounded-lg font-bold text-xs text-white bg-warm-500`}>
                   {daysUntil}
                 </span>
               </div>
 
-              {/* Location - icon matches bar color */}
               <div className="flex items-center gap-2 mt-2 text-sm text-warm-500 dark:text-warm-400">
                 <MapPin className={`w-4 h-4 flex-shrink-0 ${isOrange ? 'text-uta-orange' : 'text-uta-blue'}`} />
                 <span className="truncate">{event.location}</span>
               </div>
             </div>
 
-            {/* Arrow - matches bar color */}
             <div className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-xl flex-shrink-0 transition-all duration-300 ${
               isOrange
                 ? 'bg-uta-orange/10 text-uta-orange group-hover:bg-uta-orange group-hover:text-white'

@@ -42,7 +42,7 @@ export function FeaturedEvents({
       </div>
       <div>
         <p className="font-bold text-uta-orange-dark dark:text-uta-orange text-lg">
-          {happeningNowCount} event{happeningNowCount !== 1 ? 's' : ''} happening now!
+          {happeningNowCount} event{happeningNowCount !== 1 ? 's' : ''} happening soon!
         </p>
         <p className="text-sm text-uta-blue dark:text-warm-400">
           Starting within the next 2 hours

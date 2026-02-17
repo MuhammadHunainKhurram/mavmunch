@@ -39,7 +39,7 @@ export function SearchBar({
         value={query}
         onChange={handleChange}
         placeholder={placeholder}
-        className="w-full pl-12 pr-12 py-4 bg-warm-50 dark:bg-warm-900 border-2 border-warm-200 dark:border-warm-700 rounded-2xl text-warm-900 dark:text-warm-100 placeholder:text-warm-400 font-medium focus:outline-none focus:border-uta-orange focus:ring-4 focus:ring-uta-orange/10 transition-all duration-200"
+        className="w-full pl-12 pr-12 py-4 bg-warm-50 dark:bg-warm-900 border-2 border-warm-200 dark:border-warm-700 rounded-2xl text-warm-900 dark:text-warm-100 placeholder:text-warm-400 font-medium focus:outline-none focus:border-uta-orange"
       />
 
       {query && (

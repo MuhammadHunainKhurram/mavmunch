@@ -18,7 +18,6 @@ export function Leaderboard({
     const stats = new Map<string, { count: number }>();
     const now = new Date();
 
-    // Only include future API events
     apiEvents.forEach((event) => {
       const eventDate = new Date(event.startsOn);
       if (eventDate > now) {
@@ -31,7 +30,6 @@ export function Leaderboard({
       }
     });
 
-    // Include future submitted events
     submittedEvents.forEach((event) => {
       const eventDate = new Date(`${event.date}T${event.startTime}`);
       if (eventDate > now) {
@@ -55,13 +53,13 @@ export function Leaderboard({
   }, [apiEvents, submittedEvents]);
 
   return (
-    <div className="bg-white rounded-xl shadow-soft border border-slate-200 overflow-hidden mb-12">
-      <div className="p-4 sm:p-6 border-b border-slate-200">
+    <div className="bg-white dark:bg-warm-900 rounded-xl shadow-soft border border-slate-200 dark:border-warm-800 overflow-hidden mb-12">
+      <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-warm-800 bg-slate-50/60 dark:bg-warm-900/80">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-900">
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-warm-50">
             🏆 Leaderboard
           </h2>
-          <p className="text-slate-600 text-sm mt-1">
+          <p className="text-slate-600 dark:text-warm-400 text-sm mt-1">
             Organizations with the most upcoming free food events
           </p>
         </div>
@@ -70,14 +68,14 @@ export function Leaderboard({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 w-12">
+            <tr className="bg-slate-50 dark:bg-warm-900 border-b border-slate-200 dark:border-warm-800">
+              <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 dark:text-warm-100 w-12">
                 Rank
               </th>
-              <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900">
+              <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 dark:text-warm-100">
                 Organization
               </th>
-              <th className="px-3 sm:px-4 py-3 text-center font-semibold text-slate-900 w-16">
+              <th className="px-3 sm:px-4 py-3 text-center font-semibold text-slate-900 dark:text-warm-100 w-16">
                 Events
               </th>
             </tr>
@@ -86,22 +84,22 @@ export function Leaderboard({
             {leaderboardData.map((entry) => (
               <tr
                 key={entry.rank}
-                className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                className="border-b border-slate-100 dark:border-warm-800 hover:bg-slate-50 dark:hover:bg-warm-800/70 transition-colors"
               >
-                <td className="px-3 sm:px-4 py-3 font-semibold text-slate-900">
+                <td className="px-3 sm:px-4 py-3 font-semibold text-slate-900 dark:text-warm-50">
                   {entry.rank === 1
                     ? '🥇'
                     : entry.rank === 2
-                      ? '🥈'
-                      : entry.rank === 3
-                        ? '🥉'
-                        : `#${entry.rank}`}
+                    ? '🥈'
+                    : entry.rank === 3
+                    ? '🥉'
+                    : `#${entry.rank}`}
                 </td>
-                <td className="px-3 sm:px-4 py-3 text-slate-900 font-medium">
+                <td className="px-3 sm:px-4 py-3 text-slate-900 dark:text-warm-100 font-medium">
                   <div className="break-words">{entry.organization}</div>
                 </td>
                 <td className="px-3 sm:px-4 py-3 text-center">
-                  <span className="inline-block font-bold text-orange-500">
+                  <span className="inline-block font-bold text-orange-500 dark:text-uta-orange">
                     {entry.count}
                   </span>
                 </td>

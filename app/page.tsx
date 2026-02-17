@@ -132,39 +132,9 @@ export default function Home() {
           <LoadingSkeleton />
         ) : (
           <div className="space-y-8">
-            {/* Featured Alert */}
             <FeaturedEvents allEvents={allEvents} />
 
-            {/* Filter chips at top - wider */}
-            {selectedOrgs.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {selectedOrgs.map((org) => (
-                  <span
-                    key={org}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-uta-orange/10 text-uta-orange-dark dark:bg-uta-orange/20 dark:text-uta-orange text-sm font-semibold rounded-xl max-w-[300px]"
-                  >
-                    <span className="truncate leading-tight" style={{ 
-                      display: '-webkit-box', 
-                      WebkitLineClamp: 2, 
-                      WebkitBoxOrient: 'vertical',
-                      whiteSpace: 'normal',
-                      wordBreak: 'break-word'
-                    }}>
-                      {org}
-                    </span>
-                    <button
-                      onClick={() => handleRemoveOrg(org)}
-                      className="w-5 h-5 flex items-center justify-center rounded hover:bg-uta-orange/20 transition-colors flex-shrink-0"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Search & Controls */}
-            <div className="card-modern p-5 sm:p-6 space-y-5">
+            <div className="bg-white dark:bg-warm-900 rounded-2xl border border-warm-200 dark:border-warm-800 shadow-soft p-5 sm:p-6 space-y-5 overflow-visible">
               <SearchBar onSearch={setSearchQuery} />
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-warm-200 dark:border-warm-800">
@@ -183,9 +153,35 @@ export default function Home() {
                   <span className="font-bold text-warm-900 dark:text-warm-100">{allEvents.length}</span> events
                 </p>
               )}
+
+              {selectedOrgs.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {selectedOrgs.map((org) => (
+                    <span
+                      key={org}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-uta-orange/10 text-uta-orange-dark dark:bg-uta-orange/20 dark:text-uta-orange text-sm font-semibold rounded-xl max-w-[300px]"
+                    >
+                      <span className="leading-tight" style={{ 
+                        display: '-webkit-box', 
+                        WebkitLineClamp: 2, 
+                        WebkitBoxOrient: 'vertical',
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word'
+                      }}>
+                        {org}
+                      </span>
+                      <button
+                        onClick={() => handleRemoveOrg(org)}
+                        className="w-5 h-5 flex items-center justify-center rounded hover:bg-uta-orange/20 transition-colors flex-shrink-0"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Leaderboard Toggle */}
             <button
               onClick={() => setShowLeaderboard(!showLeaderboard)}
               className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
@@ -207,7 +203,6 @@ export default function Home() {
               />
             )}
 
-            {/* Events List with Time Grouping */}
             <section>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-uta-blue rounded-xl flex items-center justify-center shadow-blue">
@@ -230,7 +225,6 @@ export default function Home() {
         )}
       </main>
 
-      {/* Footer - neutral text */}
       <footer className="relative z-10 mt-20 border-t border-warm-200 dark:border-warm-800 bg-white/50 dark:bg-warm-950/50 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
           <div className="flex flex-col items-center gap-4 text-center">
