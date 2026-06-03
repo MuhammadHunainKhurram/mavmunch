@@ -17,25 +17,10 @@ export function Leaderboard({ pastEvents }: LeaderboardProps) {
       now.getDate()
     );
 
-    apiEvents.forEach((event) => {
-      const eventDate = new Date(event.startsOn);
-      if (eventDate > now) {
-        const org = event.organizationName;
-        if (!stats.has(org)) {
-          stats.set(org, { count: 0 });
-        }
-        const current = stats.get(org)!;
-        stats.set(org, { count: current.count + 1 });
-      }
-    });
-
-    submittedEvents.forEach((event) => {
+    pastEvents.forEach((event) => {
       const eventDate = new Date(`${event.date}T${event.startTime}`);
       if (eventDate >= sixMonthsAgo && eventDate < now) {
-        const org =
-          event.organizationName ||
-          event.departmentName ||
-          'University Event';
+        const org = event.organizationName || event.departmentName || 'University Event';
         if (!stats.has(org)) {
           stats.set(org, { count: 0 });
         }
@@ -62,73 +47,36 @@ export function Leaderboard({ pastEvents }: LeaderboardProps) {
             🏆 Leaderboard
           </h2>
           <p className="text-slate-600 dark:text-warm-400 text-sm mt-1">
-            Organizations with the most upcoming free food events
+            Organizations with the most free food events in the past 6 months
           </p>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-slate-50 dark:bg-warm-900 border-b border-slate-200 dark:border-warm-800">
-              <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 dark:text-warm-100 w-12">
-                Rank
-              </th>
-              <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 dark:text-warm-100">
-                Organization
-              </th>
-              <th className="px-3 sm:px-4 py-3 text-center font-semibold text-slate-900 dark:text-warm-100 w-16">
-                Events
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaderboardData.map((entry) => (
-              <tr
-                key={entry.rank}
-                className="border-b border-slate-100 dark:border-warm-800 hover:bg-slate-50 dark:hover:bg-warm-800/70 transition-colors"
-              >
-                <td className="px-3 sm:px-4 py-3 font-semibold text-slate-900 dark:text-warm-50">
-                  {entry.rank === 1
-                    ? '🥇'
-                    : entry.rank === 2
-                    ? '🥈'
-                    : entry.rank === 3
-                    ? '🥉'
-                    : `#${entry.rank}`}
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-slate-900 dark:text-warm-100 font-medium">
-                  <div className="break-words">{entry.organization}</div>
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-center">
-                  <span className="inline-block font-bold text-orange-500 dark:text-uta-orange">
-                    {entry.count}
-                  </span>
-                </td>
+      {leaderboardData.length === 0 ? (
+        <p className="px-4 sm:px-6 py-8 text-center text-sm text-warm-500 dark:text-warm-400">
+          No events in the past 6 months yet. Check back soon!
+        </p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-warm-900 border-b border-slate-200 dark:border-warm-800">
+                <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 dark:text-warm-100 w-12">Rank</th>
+                <th className="px-3 sm:px-4 py-3 text-left font-semibold text-slate-900 dark:text-warm-100">Organization</th>
+                <th className="px-3 sm:px-4 py-3 text-center font-semibold text-slate-900 dark:text-warm-100 w-16">Events</th>
               </tr>
             </thead>
             <tbody>
               {leaderboardData.map((entry) => (
-                <tr
-                  key={entry.rank}
-                  className="border-b border-warm-100 dark:border-warm-800 hover:bg-warm-100 dark:hover:bg-warm-800 transition-colors"
-                >
-                  <td className="px-3 sm:px-4 py-3 font-semibold text-warm-900 dark:text-warm-100">
-                    {entry.rank === 1
-                      ? '🥇'
-                      : entry.rank === 2
-                        ? '🥈'
-                        : entry.rank === 3
-                          ? '🥉'
-                          : `#${entry.rank}`}
+                <tr key={entry.rank} className="border-b border-slate-100 dark:border-warm-800 hover:bg-slate-50 dark:hover:bg-warm-800/70 transition-colors">
+                  <td className="px-3 sm:px-4 py-3 font-semibold text-slate-900 dark:text-warm-50">
+                    {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : entry.rank === 3 ? '🥉' : `#${entry.rank}`}
                   </td>
-                  <td className="px-3 sm:px-4 py-3 text-warm-900 dark:text-warm-100 font-medium">
+                  <td className="px-3 sm:px-4 py-3 text-slate-900 dark:text-warm-100 font-medium">
                     <div className="break-words">{entry.organization}</div>
                   </td>
                   <td className="px-3 sm:px-4 py-3 text-center">
-                    <span className="inline-block font-bold text-uta-orange">
-                      {entry.count}
-                    </span>
+                    <span className="inline-block font-bold text-orange-500 dark:text-uta-orange">{entry.count}</span>
                   </td>
                 </tr>
               ))}
