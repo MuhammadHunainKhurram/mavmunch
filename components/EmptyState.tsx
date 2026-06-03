@@ -38,7 +38,7 @@ export function EmptyState({ hasFilters }: EmptyStateProps) {
             Nothing cooking right now
           </h2>
           <p className="text-uta-blue max-w-sm leading-relaxed">
-            Check back soon — free food events are added regularly!
+            Check back soon, free food events are added regularly!
           </p>
         </>
       )}

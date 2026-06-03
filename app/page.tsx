@@ -40,8 +40,6 @@ function getEventDescription(event: AnyEvent): string {
 }
 
 export default function Home() {
-  const [apiEvents, setApiEvents] = useState<MavEngageEvent[]>([]);
-  const [submittedEvents, setSubmittedEvents] = useState<SubmittedEvent[]>([]);
   const [pastEvents, setPastEvents] = useState<SubmittedEvent[]>([]);
   const [allEvents, setAllEvents] = useState<AnyEvent[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<AnyEvent[]>([]);
@@ -66,11 +64,9 @@ export default function Home() {
       const [api, submitted, past] = await Promise.all([
         withTimeout(getFreeFoodEvents(60), 10000, []),
         withTimeout(getApprovedSubmittedEvents(60), 10000, []),
-        withTimeout(getPastSubmittedEvents(12), 10000, []),
+        withTimeout(getPastSubmittedEvents(6), 10000, []),
       ]);
 
-      setApiEvents(api);
-      setSubmittedEvents(submitted);
       setPastEvents(past);
       setAllEvents([...api, ...submitted] as AnyEvent[]);
     } catch (err) {
@@ -200,11 +196,7 @@ export default function Home() {
             </button>
 
             {showLeaderboard && (
-              <Leaderboard
-                apiEvents={apiEvents}
-                submittedEvents={submittedEvents}
-                pastEvents={pastEvents}
-              />
+              <Leaderboard pastEvents={pastEvents} />
             )}
 
             {/* Events List with Time Grouping */}
