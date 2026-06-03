@@ -105,7 +105,7 @@ mavmunch/
 │   ├── EmptyState.tsx      # Empty state illustration
 │   ├── EventCard.tsx       # Individual event card
 │   ├── EventList.tsx       # Time-grouped event list
-│   ├── FeaturedEvents.tsx  # "Happening Now" alert
+│   ├── FeaturedEvents.tsx  # "Happening Soon" alert
 │   ├── FilterBar.tsx       # Organization filter (top overlay)
 │   ├── FloatingFoodBackground.tsx # (deprecated - returns null)
 │   ├── Header.tsx          # App header with logo

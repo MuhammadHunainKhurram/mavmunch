@@ -43,7 +43,7 @@ export function FilterBar({
   if (organizations.length === 0) return null;
 
   return (
-    <div className="relative z-[9999]"  ref={dropdownRef}>
+    <div className="relative" style={{ zIndex: 9999 }} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
@@ -63,20 +63,23 @@ export function FilterBar({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-80 card-modern shadow-medium z-20 overflow-hidden rounded-2xl">
+        <div
+          className="absolute top-full left-0 mt-2 w-80 shadow-medium overflow-hidden rounded-2xl bg-white dark:bg-warm-900 border border-warm-200 dark:border-warm-800"
+          style={{ zIndex: 9999 }}
+        >
           <div className="p-3 border-b border-warm-200 dark:border-warm-800 bg-warm-50 dark:bg-warm-900">
-            <div className="relative z-[9999]">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-warm-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search organizations..."
-                className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-warm-800 border border-warm-200 dark:border-warm-700 rounded-xl text-sm font-medium focus:outline-none focus:border-uta-orange transition-colors"
+                className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-warm-800 border border-warm-200 dark:border-warm-700 rounded-xl text-sm font-medium focus:outline-none focus:border-uta-orange"
               />
             </div>
           </div>
-          <div className="max-h-64 overflow-y-auto p-2 z-30">
+          <div className="max-h-64 overflow-y-auto p-2">
             {filteredOrgs.map(({ org, count }) => (
               <button
                 key={org}
