@@ -14,6 +14,8 @@ export interface SubmittedEvent {
   approved?: boolean;
   flaggedCount?: number;
   foodType?: string;
+  submitterName?: string;
+  submitterEmail?: string;
 }
 
 export interface Notification {
@@ -23,11 +25,4 @@ export interface Notification {
   organizationName: string;
   eventDate: string;
   createdAt: string;
-}
-
-export interface LeaderboardEntry {
-  organizationName: string;
-  totalEvents: number;
-  submittedEvents: number;
-  apiEvents: number;
 }

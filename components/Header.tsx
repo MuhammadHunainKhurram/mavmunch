@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useTheme } from '@/components/ThemeProvider';
-import { Moon, Sun, UtensilsCrossed } from 'lucide-react';
+import { Moon, Plus, Sun, UtensilsCrossed } from 'lucide-react';
 
 interface HeaderProps {
   eventCount: number;
@@ -61,6 +62,14 @@ export function Header({ eventCount }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/submit"
+              className="flex items-center gap-1.5 px-3 py-2 bg-uta-orange text-white rounded-xl text-sm font-bold shadow-orange hover:bg-uta-orange-dark transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Submit event</span>
+            </Link>
+
             <div className="flex items-center gap-2 px-3 py-2 bg-warm-100 dark:bg-warm-800 rounded-xl">
               <UtensilsCrossed className="w-4 h-4 text-warm-500 dark:text-warm-400" />
               <span className="text-sm font-bold text-warm-700 dark:text-warm-300">

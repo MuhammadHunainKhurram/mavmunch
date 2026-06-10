@@ -13,6 +13,7 @@ interface EventListProps {
   events: AnyEvent[];
   hasFilters: boolean;
   sortBy: SortOption;
+  onClearFilters?: () => void;
 }
 
 interface GroupedEvents {
@@ -86,9 +87,9 @@ const groupConfig = {
   },
 };
 
-export function EventList({ events, hasFilters, sortBy }: EventListProps) {
+export function EventList({ events, hasFilters, sortBy, onClearFilters }: EventListProps) {
   if (events.length === 0) {
-    return <EmptyState hasFilters={hasFilters} />;
+    return <EmptyState hasFilters={hasFilters} onClearFilters={onClearFilters} />;
   }
 
   const isSortedByDate = sortBy === 'date-asc';
@@ -119,7 +120,7 @@ export function EventList({ events, hasFilters, sortBy }: EventListProps) {
 
         return (
           <section key={key} className="animate-slide-up">
-            <div className="flex items-center gap-4 mb-4 top-20 bg-cream/95 rounded-lg dark:bg-cream-dark/95 py-2">
+            <div className="flex items-center gap-4 mb-4 bg-cream/95 rounded-lg dark:bg-cream-dark/95 py-2">
               <div className={`ml-2 w-4 h-1 ${config.color} rounded-full`} />
               <h3 className="text-lg font-bold text-warm-900 dark:text-warm-100">{config.label}</h3>
               <span className={`px-3 py-1 rounded-full text-sm font-bold ${config.badgeColor}`}>{groupEvents.length}</span>

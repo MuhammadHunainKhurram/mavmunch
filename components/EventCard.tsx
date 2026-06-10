@@ -2,7 +2,7 @@
 
 import { MavEngageEvent } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
-import { formatDate, formatTime, getMavEngageUrl } from '@/lib/utils';
+import { formatDate, formatTime, getMavEngageUrl, getOrgName } from '@/lib/utils';
 import { MapPin, ArrowUpRight, Clock, Calendar } from 'lucide-react';
 
 type EventType = MavEngageEvent | SubmittedEvent;
@@ -58,23 +58,19 @@ interface EventCardProps {
 
 export function EventCard({ event, index = 0 }: EventCardProps) {
   const eventName = getEventName(event);
-  const eventOrg = event.organizationName;
+  const eventOrg = getOrgName(event);
   const eventDate = getEventDate(event);
   const eventTime = getEventTime(event);
   const daysUntil = getDaysUntil(event);
-  const eventUrl = isApiEvent(event)
-    ? getMavEngageUrl(event.id)
-    : `https://mavorgs.campuslabs.com/engage/event/${event.id || ''}`;
+  // Submitted events live only in Firestore; there is no MavEngage page for them
+  const eventUrl = isApiEvent(event) ? getMavEngageUrl(event.id) : null;
 
   const isOrange = index % 2 === 0;
 
-  return (
-    <a
-      href={eventUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block card-modern overflow-hidden hover:shadow-medium transition-all duration-300"
-    >
+  const cardClassName =
+    'group block card-modern overflow-hidden hover:shadow-medium transition-all duration-300';
+
+  const content = (
       <div className="flex items-stretch">
         <div className={`flex-shrink-0 w-3 sm:w-4 ${
           isOrange 
@@ -123,16 +119,32 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
               </div>
             </div>
 
-            <div className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-xl flex-shrink-0 transition-all duration-300 ${
-              isOrange
-                ? 'bg-uta-orange/10 text-uta-orange group-hover:bg-uta-orange group-hover:text-white'
-                : 'bg-uta-blue/10 text-uta-blue group-hover:bg-uta-blue group-hover:text-white'
-            }`}>
-              <ArrowUpRight className="w-5 h-5" />
-            </div>
+            {eventUrl && (
+              <div className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-xl flex-shrink-0 transition-all duration-300 ${
+                isOrange
+                  ? 'bg-uta-orange/10 text-uta-orange group-hover:bg-uta-orange group-hover:text-white'
+                  : 'bg-uta-blue/10 text-uta-blue group-hover:bg-uta-blue group-hover:text-white'
+              }`}>
+                <ArrowUpRight className="w-5 h-5" />
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </a>
   );
+
+  if (eventUrl) {
+    return (
+      <a
+        href={eventUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cardClassName}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <div className={cardClassName}>{content}</div>;
 }

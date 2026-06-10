@@ -1,30 +1,27 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Search, X } from 'lucide-react';
 
 interface SearchBarProps {
+  value: string;
   onSearch: (query: string) => void;
   placeholder?: string;
 }
 
 export function SearchBar({
+  value,
   onSearch,
   placeholder = 'Search events, organizations...',
 }: SearchBarProps) {
-  const [query, setQuery] = useState('');
-
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setQuery(value);
-      onSearch(value);
+      onSearch(e.target.value);
     },
     [onSearch]
   );
 
   const handleClear = useCallback(() => {
-    setQuery('');
     onSearch('');
   }, [onSearch]);
 
@@ -36,13 +33,13 @@ export function SearchBar({
 
       <input
         type="text"
-        value={query}
+        value={value}
         onChange={handleChange}
         placeholder={placeholder}
         className="w-full pl-12 pr-12 py-4 bg-warm-50 dark:bg-warm-900 border-2 border-warm-200 dark:border-warm-700 rounded-2xl text-warm-900 dark:text-warm-100 placeholder:text-warm-400 font-medium focus:outline-none focus:border-uta-orange"
       />
 
-      {query && (
+      {value && (
         <button
           onClick={handleClear}
           className="absolute inset-y-0 right-3 flex items-center justify-center w-10 h-10 my-auto rounded-xl text-warm-400 hover:text-warm-600 hover:bg-warm-100 dark:hover:bg-warm-800 transition-colors"

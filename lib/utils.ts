@@ -1,4 +1,24 @@
 import { MavEngageEvent, SortOption } from './types';
+import { SubmittedEvent } from './firebaseTypes';
+
+type AnyEvent = MavEngageEvent | SubmittedEvent;
+
+export function getOrgName(event: {
+  organizationName?: string;
+  departmentName?: string;
+}): string {
+  return event.organizationName || event.departmentName || 'University Event';
+}
+
+function getEventName(event: AnyEvent): string {
+  return 'startsOn' in event ? event.name : event.title;
+}
+
+function getStartTime(event: AnyEvent): number {
+  const iso =
+    'startsOn' in event ? event.startsOn : `${event.date}T${event.startTime}`;
+  return new Date(iso).getTime();
+}
 
 export function formatEventDateTime(isoDate: string): string {
   const date = new Date(isoDate);
@@ -31,12 +51,12 @@ export function formatDate(isoDate: string): string {
 }
 
 export function getOrganizationsWithCounts(
-  events: MavEngageEvent[]
+  events: AnyEvent[]
 ): { org: string; count: number }[] {
   const counts = new Map<string, number>();
 
   events.forEach((event) => {
-    const org = event.organizationName;
+    const org = getOrgName(event);
     counts.set(org, (counts.get(org) || 0) + 1);
   });
 
@@ -46,27 +66,23 @@ export function getOrganizationsWithCounts(
 }
 
 export function sortEvents(
-  events: MavEngageEvent[],
+  events: AnyEvent[],
   sortBy: SortOption
-): MavEngageEvent[] {
+): AnyEvent[] {
   const sorted = [...events];
 
   switch (sortBy) {
     case 'date-asc':
-      return sorted.sort((a, b) =>
-        new Date(a.startsOn).getTime() - new Date(b.startsOn).getTime()
-      );
+      return sorted.sort((a, b) => getStartTime(a) - getStartTime(b));
     case 'date-desc':
-      return sorted.sort((a, b) =>
-        new Date(b.startsOn).getTime() - new Date(a.startsOn).getTime()
-      );
+      return sorted.sort((a, b) => getStartTime(b) - getStartTime(a));
     case 'org-asc':
       return sorted.sort((a, b) =>
-        a.organizationName.localeCompare(b.organizationName)
+        getOrgName(a).localeCompare(getOrgName(b))
       );
     case 'name-asc':
       return sorted.sort((a, b) =>
-        a.name.localeCompare(b.name)
+        getEventName(a).localeCompare(getEventName(b))
       );
     default:
       return sorted;
@@ -74,11 +90,11 @@ export function sortEvents(
 }
 
 export function filterByOrganizations(
-  events: MavEngageEvent[],
+  events: AnyEvent[],
   selectedOrgs: string[]
-): MavEngageEvent[] {
+): AnyEvent[] {
   if (selectedOrgs.length === 0) return events;
-  return events.filter((e) => selectedOrgs.includes(e.organizationName));
+  return events.filter((e) => selectedOrgs.includes(getOrgName(e)));
 }
 
 export function getMavEngageUrl(eventId: string): string {

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
+import { getOrgName } from '@/lib/utils';
 
 interface LeaderboardProps {
   pastEvents: SubmittedEvent[];
@@ -9,33 +10,21 @@ interface LeaderboardProps {
 
 export function Leaderboard({ pastEvents }: LeaderboardProps) {
   const leaderboardData = useMemo(() => {
-    const stats = new Map<string, { count: number }>();
-    const now = new Date();
-    const sixMonthsAgo = new Date(
-      now.getFullYear(),
-      now.getMonth() - 6,
-      now.getDate()
-    );
+    // pastEvents is already limited to the past 6 months by the service
+    const stats = new Map<string, number>();
 
     pastEvents.forEach((event) => {
-      const eventDate = new Date(`${event.date}T${event.startTime}`);
-      if (eventDate >= sixMonthsAgo && eventDate < now) {
-        const org = event.organizationName || event.departmentName || 'University Event';
-        if (!stats.has(org)) {
-          stats.set(org, { count: 0 });
-        }
-        const current = stats.get(org)!;
-        stats.set(org, { count: current.count + 1 });
-      }
+      const org = getOrgName(event);
+      stats.set(org, (stats.get(org) || 0) + 1);
     });
 
     return Array.from(stats.entries())
-      .sort((a, b) => b[1].count - a[1].count)
+      .sort((a, b) => b[1] - a[1])
       .slice(0, 15)
-      .map(([org, stat], index) => ({
+      .map(([org, count], index) => ({
         rank: index + 1,
         organization: org,
-        ...stat,
+        count,
       }));
   }, [pastEvents]);
 
