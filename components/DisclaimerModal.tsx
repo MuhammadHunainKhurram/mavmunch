@@ -1,12 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 
+const DISMISSED_KEY = 'mavmunch-disclaimer-dismissed';
+
 export function DisclaimerModal() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem(DISMISSED_KEY)) {
+      setIsOpen(true);
+    }
+  }, []);
 
   const handleClose = () => {
+    localStorage.setItem(DISMISSED_KEY, '1');
     setIsOpen(false);
   };
 

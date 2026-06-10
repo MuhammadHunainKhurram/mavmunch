@@ -4,9 +4,10 @@ import { UtensilsCrossed } from 'lucide-react';
 
 interface EmptyStateProps {
   hasFilters: boolean;
+  onClearFilters?: () => void;
 }
 
-export function EmptyState({ hasFilters }: EmptyStateProps) {
+export function EmptyState({ hasFilters, onClearFilters }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
       <div className="w-20 h-20 bg-uta-blue/10 rounded-2xl flex items-center justify-center mb-6">
@@ -26,7 +27,7 @@ export function EmptyState({ hasFilters }: EmptyStateProps) {
             Try adjusting your search or filters to find what you're looking for.
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={onClearFilters}
             className="btn-primary"
           >
             Clear filters

@@ -2,7 +2,7 @@
 
 import { MavEngageEvent } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
-import { formatDate, formatTime, getMavEngageUrl } from '@/lib/utils';
+import { formatDate, formatTime, getMavEngageUrl, getOrgName } from '@/lib/utils';
 import { MapPin, ArrowUpRight, Flame } from 'lucide-react';
 
 type EventType = MavEngageEvent | SubmittedEvent;
@@ -43,12 +43,11 @@ interface EventListItemProps {
 
 export function EventListItem({ event, index = 0 }: EventListItemProps) {
   const eventName = getEventName(event);
-  const eventOrg = event.organizationName;
+  const eventOrg = getOrgName(event);
   const eventDate = getEventDate(event);
   const eventTime = getEventTime(event);
-  const eventUrl = isApiEvent(event)
-    ? getMavEngageUrl(event.id)
-    : `https://mavorgs.campuslabs.com/engage/event/${event.id || ''}`;
+  // Submitted events live only in Firestore; there is no MavEngage page for them
+  const eventUrl = isApiEvent(event) ? getMavEngageUrl(event.id) : null;
 
   const startDateTime = getStartDateTime(event);
   const now = new Date();
@@ -58,14 +57,8 @@ export function EventListItem({ event, index = 0 }: EventListItemProps) {
 
   const isOrange = index % 2 === 0;
 
-  return (
-    <a
-      href={eventUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block card-uta-hover"
-    >
-      <div className="flex items-stretch">
+  const content = (
+    <div className="flex items-stretch">
         <div className={`flex-shrink-0 w-24 sm:w-28 p-4 sm:p-5 flex flex-col justify-center border-r border-warm-200 dark:border-warm-800 ${
           isOrange ? 'bg-uta-orange-light dark:bg-uta-orange/5' : 'bg-uta-blue-light dark:bg-uta-blue/5'
         }`}>
@@ -117,12 +110,28 @@ export function EventListItem({ event, index = 0 }: EventListItemProps) {
               </div>
             </div>
 
-            <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-warm-100 dark:bg-warm-800 text-warm-400 group-hover:bg-uta-orange group-hover:text-white transition-all flex-shrink-0">
-              <ArrowUpRight className="w-5 h-5" />
-            </div>
+            {eventUrl && (
+              <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-warm-100 dark:bg-warm-800 text-warm-400 group-hover:bg-uta-orange group-hover:text-white transition-all flex-shrink-0">
+                <ArrowUpRight className="w-5 h-5" />
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </a>
   );
+
+  if (eventUrl) {
+    return (
+      <a
+        href={eventUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block card-uta-hover"
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <div className="group block card-uta-hover">{content}</div>;
 }

@@ -36,7 +36,7 @@ function getEventName(event: AnyEvent): string {
 }
 
 function getEventDescription(event: AnyEvent): string {
-  return isApiEvent(event) ? event.description : event.description;
+  return event.description;
 }
 
 export default function Home() {
@@ -61,14 +61,28 @@ export default function Home() {
           new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
         ]);
 
+      // A MavEngage outage shouldn't blank the whole page if Firebase
+      // events loaded fine, so each source falls back independently
+      let apiFailed = false;
       const [api, submitted, past] = await Promise.all([
-        withTimeout(getFreeFoodEvents(60), 10000, []),
+        withTimeout(
+          getFreeFoodEvents(60).catch(() => {
+            apiFailed = true;
+            return [] as MavEngageEvent[];
+          }),
+          10000,
+          []
+        ),
         withTimeout(getApprovedSubmittedEvents(60), 10000, []),
         withTimeout(getPastSubmittedEvents(6), 10000, []),
       ]);
 
       setPastEvents(past);
       setAllEvents([...api, ...submitted] as AnyEvent[]);
+
+      if (apiFailed && submitted.length === 0) {
+        setError('Unable to load events. Please check your connection.');
+      }
     } catch (err) {
       console.error('Error fetching events:', err);
       setError('Unable to load events. Please check your connection.');
@@ -113,6 +127,11 @@ export default function Home() {
     setSelectedOrgs(selectedOrgs.filter((o) => o !== org));
   };
 
+  const handleClearFilters = useCallback(() => {
+    setSelectedOrgs([]);
+    setSearchQuery('');
+  }, []);
+
   const organizationsWithCounts = getOrganizationsWithCounts(allEvents as any);
   const hasFilters = selectedOrgs.length > 0 || searchQuery.trim().length > 0;
 
@@ -131,7 +150,7 @@ export default function Home() {
             <FeaturedEvents allEvents={allEvents} />
 
             <div className="bg-white dark:bg-warm-900 rounded-2xl border border-warm-200 dark:border-warm-800 shadow-soft p-5 sm:p-6 space-y-5 overflow-visible">
-              <SearchBar onSearch={setSearchQuery} />
+              <SearchBar value={searchQuery} onSearch={setSearchQuery} />
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-warm-200 dark:border-warm-800">
                 <FilterBar
@@ -211,6 +230,7 @@ export default function Home() {
                 events={filteredEvents}
                 hasFilters={hasFilters}
                 sortBy={sortBy}
+                onClearFilters={handleClearFilters}
               />
             </section>
           </div>

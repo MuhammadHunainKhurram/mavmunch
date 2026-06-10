@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
 } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,6 +16,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+
+// Lazy: getAuth validates the API key immediately, which breaks
+// next build prerendering when env vars are absent
+export function getFirebaseAuth() {
+  return getAuth(app);
+}
+
+export const googleProvider = new GoogleAuthProvider();
 
 export const COLLECTIONS = {
   SUBMITTED_EVENTS: 'submitted_events',
