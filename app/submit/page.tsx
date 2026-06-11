@@ -46,7 +46,7 @@ export default function SubmitPage() {
               </button>
               <Link
                 href="/"
-                className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-warm-100 dark:bg-warm-800 text-warm-700 dark:text-warm-300 hover:bg-warm-200 dark:hover:bg-warm-700 transition-colors text-center"
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-semibold bg-warm-100 dark:bg-warm-800 text-warm-700 dark:text-warm-300 hover:bg-warm-200 dark:hover:bg-warm-700 transition-colors"
               >
                 Back to events
               </Link>
@@ -55,11 +55,11 @@ export default function SubmitPage() {
         ) : (
           <div className="bg-white dark:bg-warm-900 rounded-2xl border border-warm-200 dark:border-warm-800 shadow-soft p-6 sm:p-8">
             <h1 className="text-2xl font-bold text-warm-900 dark:text-warm-100 mb-1">
-              Submit a free food event
+              Submit a food event
             </h1>
             <p className="text-sm text-warm-500 dark:text-warm-400 mb-6">
-              Know about free food on campus? Share it with fellow Mavericks.
-              Submissions are reviewed before they go live.
+              Free food on campus, or a food event anywhere in DFW. Submissions
+              are reviewed before they go live.
             </p>
             <EventForm
               submitLabel="Submit event"

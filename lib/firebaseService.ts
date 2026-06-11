@@ -18,6 +18,9 @@ export async function submitEvent(event: SubmittedEvent): Promise<string> {
     {
       title: event.title,
       eventType: event.eventType,
+      audience: event.audience || 'uta',
+      isFree: event.audience === 'dfw' ? event.isFree !== false : true,
+      cost: event.isFree === false ? event.cost || null : null,
       organizationName: event.organizationName || null,
       departmentName: event.departmentName || null,
       location: event.location,
@@ -71,6 +74,7 @@ export async function getApprovedSubmittedEvents(
     );
 
     allEvents = allEvents
+      .filter((event) => (event.audience ?? 'uta') === 'uta')
       .filter((event) => {
         // Parse as local time; new Date('YYYY-MM-DD') alone is UTC midnight,
         // which drops same-day events. Keep events visible until they end.
@@ -105,6 +109,7 @@ export async function getPastSubmittedEvents(
     let allEvents = await fetchApprovedEvents();
 
     allEvents = allEvents
+      .filter((event) => (event.audience ?? 'uta') === 'uta')
       .filter((event) => {
         const eventEnd = new Date(`${event.date}T${event.endTime || '23:59'}`);
         return eventEnd >= pastDate && eventEnd < now;
@@ -118,6 +123,35 @@ export async function getPastSubmittedEvents(
     return allEvents;
   } catch (error) {
     console.error('Error fetching past events:', error);
+    return [];
+  }
+}
+
+export async function getApprovedDfwEvents(
+  daysAhead: number = 60
+): Promise<SubmittedEvent[]> {
+  try {
+    const allEvents = await fetchApprovedEvents();
+
+    const now = new Date();
+    const futureDate = new Date(
+      now.getTime() + daysAhead * 24 * 60 * 60 * 1000
+    );
+
+    return allEvents
+      .filter((event) => event.audience === 'dfw')
+      .filter((event) => {
+        const eventStart = new Date(`${event.date}T${event.startTime}`);
+        const eventEnd = new Date(`${event.date}T${event.endTime || '23:59'}`);
+        return eventEnd >= now && eventStart <= futureDate;
+      })
+      .sort((a, b) => {
+        const aTime = new Date(`${a.date}T${a.startTime}`).getTime();
+        const bTime = new Date(`${b.date}T${b.startTime}`).getTime();
+        return aTime - bTime;
+      });
+  } catch (error) {
+    console.error('Error fetching DFW events:', error);
     return [];
   }
 }

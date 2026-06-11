@@ -2,6 +2,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const endsAfter = searchParams.get('endsAfter');
+    const endsBefore = searchParams.get('endsBefore');
     const take = searchParams.get('take') || '200';
 
     const params = new URLSearchParams({
@@ -12,6 +13,9 @@ export async function GET(request: Request) {
       take: take,
       'benefitNames[0]': 'FreeFood',
     });
+    if (endsBefore) {
+      params.set('endsBefore', endsBefore);
+    }
 
     const response = await fetch(
       `https://mavengage.uta.edu/api/discovery/event/search?${params.toString()}`,

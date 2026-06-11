@@ -1,16 +1,17 @@
 'use client';
 
 import { useMemo } from 'react';
+import { MavEngageEvent } from '@/lib/types';
 import { SubmittedEvent } from '@/lib/firebaseTypes';
 import { getOrgName } from '@/lib/utils';
 
 interface LeaderboardProps {
-  pastEvents: SubmittedEvent[];
+  pastEvents: (MavEngageEvent | SubmittedEvent)[];
 }
 
 export function Leaderboard({ pastEvents }: LeaderboardProps) {
   const leaderboardData = useMemo(() => {
-    // pastEvents is already limited to the past 6 months by the service
+    // pastEvents is already limited to the past 6 months by both sources
     const stats = new Map<string, number>();
 
     pastEvents.forEach((event) => {

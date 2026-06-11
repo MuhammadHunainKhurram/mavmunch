@@ -63,6 +63,13 @@ export function Header({ eventCount }: HeaderProps) {
 
           <div className="flex items-center gap-3">
             <Link
+              href="/dfw"
+              className="px-3 py-2 rounded-xl text-sm font-bold text-warm-700 dark:text-warm-300 hover:bg-warm-100 dark:hover:bg-warm-800 transition-colors"
+            >
+              DFW
+            </Link>
+
+            <Link
               href="/submit"
               className="flex items-center gap-1.5 px-3 py-2 bg-uta-orange text-white rounded-xl text-sm font-bold shadow-orange hover:bg-uta-orange-dark transition-colors"
             >
