@@ -4,7 +4,7 @@ A web application that helps UTA students discover free food events on campus by
 
 ## Features
 
-✨ **Core Features:**
+ **Core Features:**
 - **Real-time Event Discovery** - Automatically fetches free food events from MavEngage for the next 60 days
 - **Smart Filtering** - Filter events by organization with event counts
 - **Flexible Sorting** - Sort by date (soonest/latest), organization name, or event name
@@ -188,10 +188,10 @@ Optional: Set up Firebase for submitted events feature.
 
 ## Future Features
 
-- 🗺️ **Map View** - Show event locations on an interactive map
-- 📧 **Notifications** - Email alerts for new events from favorite orgs
-- 👤 **User Accounts** - Save favorite organizations
-- 📱 **PWA** - Install as mobile app
+-  **Map View** - Show event locations on an interactive map
+-  **Notifications** - Email alerts for new events from favorite orgs
+-  **User Accounts** - Save favorite organizations
+-  **PWA** - Install as a mobile app
 
 ## License
 
@@ -203,11 +203,6 @@ For issues or questions, check the code comments and documentation files provide
 
 ---
 
-**Ready to find some free food?** 🍕
+**Ready to find some free food?**
 
-```bash
-npm run dev
-```
-
-Happy eating! 🎉
-```
+Happy eating!
