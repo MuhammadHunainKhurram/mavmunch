@@ -47,9 +47,25 @@ function AdminEventCard({ event, pending, onApprove, onDelete, onEdit }: AdminEv
     <div className="bg-white dark:bg-warm-900 rounded-2xl border border-warm-200 dark:border-warm-800 shadow-soft p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-wider text-uta-blue mb-1">
-            {getOrgName(event)}
-          </p>
+          <div className="flex items-center gap-2 mb-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-uta-blue">
+              {getOrgName(event)}
+            </p>
+            <span
+              className={`text-xs font-bold px-2 py-0.5 rounded-md ${
+                event.audience === 'dfw'
+                  ? 'bg-uta-blue/10 text-uta-blue'
+                  : 'bg-uta-orange/10 text-uta-orange-dark dark:text-uta-orange'
+              }`}
+            >
+              {event.audience === 'dfw' ? 'DFW' : 'UTA'}
+            </span>
+            {event.audience === 'dfw' && event.isFree === false && (
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-warm-100 dark:bg-warm-800 text-warm-600 dark:text-warm-400">
+                Paid{event.cost ? ` · ${event.cost}` : ''}
+              </span>
+            )}
+          </div>
           <h3 className="text-lg font-bold text-warm-900 dark:text-warm-100">
             {event.title}
           </h3>

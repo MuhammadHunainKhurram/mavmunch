@@ -111,6 +111,20 @@ export function EventCard({ event, index = 0 }: EventCardProps) {
                 <span className={`inline-flex items-center px-2 py-1 rounded-lg font-bold text-xs text-white bg-warm-500`}>
                   {daysUntil}
                 </span>
+
+                {!isApiEvent(event) && event.audience === 'dfw' && (
+                  <span
+                    className={`inline-flex items-center px-2 py-1 rounded-lg font-bold text-xs ${
+                      event.isFree === false
+                        ? 'bg-warm-100 dark:bg-warm-800 text-warm-600 dark:text-warm-400'
+                        : 'bg-green-600/10 text-green-700 dark:text-green-400'
+                    }`}
+                  >
+                    {event.isFree === false
+                      ? `Paid${event.cost ? ` · ${event.cost}` : ''}`
+                      : 'Free'}
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center gap-2 mt-2 text-sm text-warm-500 dark:text-warm-400">

@@ -7,6 +7,9 @@ export type EventFormValues = Pick<
   SubmittedEvent,
   | 'title'
   | 'eventType'
+  | 'audience'
+  | 'isFree'
+  | 'cost'
   | 'organizationName'
   | 'departmentName'
   | 'location'
@@ -43,6 +46,9 @@ export function EventForm({
   const [values, setValues] = useState<EventFormValues>({
     title: '',
     eventType: 'student-org',
+    audience: 'uta',
+    isFree: true,
+    cost: '',
     organizationName: '',
     departmentName: '',
     location: '',
@@ -68,6 +74,20 @@ export function EventForm({
     ) =>
       setValues((v) => ({ ...v, [field]: e.target.value }));
 
+  const setAudience = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const audience = e.target.value as 'uta' | 'dfw';
+    setValues((v) => ({
+      ...v,
+      audience,
+      eventType: audience === 'dfw' ? 'dfw' : 'student-org',
+      departmentName: audience === 'dfw' ? '' : v.departmentName,
+      isFree: audience === 'dfw' ? v.isFree : true,
+      cost: audience === 'dfw' ? v.cost : '',
+    }));
+  };
+
+  const isDfw = values.audience === 'dfw';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -90,6 +110,25 @@ export function EventForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
+        <label className={labelCls}>Where is this event? *</label>
+        <select
+          required
+          value={values.audience}
+          onChange={setAudience}
+          className={inputCls}
+        >
+          <option value="uta">On campus / UTA-affiliated</option>
+          <option value="dfw">Elsewhere in DFW (off campus)</option>
+        </select>
+        {isDfw && (
+          <p className="text-xs text-warm-500 dark:text-warm-400 mt-1.5">
+            DFW events must be within 50 miles of UTA and not hosted by a
+            UTA-affiliated organization.
+          </p>
+        )}
+      </div>
+
+      <div>
         <label className={labelCls}>Event title *</label>
         <input
           type="text"
@@ -101,49 +140,91 @@ export function EventForm({
         />
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label className={labelCls}>Hosted by *</label>
-          <select
-            required
-            value={values.eventType}
-            onChange={set('eventType')}
-            className={inputCls}
-          >
-            <option value="student-org">Student organization</option>
-            <option value="department">Department</option>
-            <option value="university">University</option>
-          </select>
-        </div>
-
-        {values.eventType === 'student-org' && (
+      {isDfw ? (
+        <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelCls}>Organization name *</label>
+            <label className={labelCls}>Host / organization name *</label>
             <input
               type="text"
               required
               value={values.organizationName}
               onChange={set('organizationName')}
-              placeholder="e.g. ACM @ UTA"
+              placeholder="e.g. Arlington Food Truck Park"
               className={inputCls}
             />
           </div>
-        )}
-
-        {values.eventType === 'department' && (
           <div>
-            <label className={labelCls}>Department name *</label>
-            <input
-              type="text"
+            <label className={labelCls}>Is the food free? *</label>
+            <select
               required
-              value={values.departmentName}
-              onChange={set('departmentName')}
-              placeholder="e.g. Computer Science"
+              value={values.isFree === false ? 'paid' : 'free'}
+              onChange={(e) =>
+                setValues((v) => ({ ...v, isFree: e.target.value === 'free' }))
+              }
               className={inputCls}
-            />
+            >
+              <option value="free">Free</option>
+              <option value="paid">Paid</option>
+            </select>
           </div>
-        )}
-      </div>
+          {values.isFree === false && (
+            <div className="sm:col-span-2">
+              <label className={labelCls}>Cost details</label>
+              <input
+                type="text"
+                value={values.cost}
+                onChange={set('cost')}
+                placeholder="e.g. $10 entry, pay per plate"
+                className={inputCls}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>Hosted by *</label>
+            <select
+              required
+              value={values.eventType}
+              onChange={set('eventType')}
+              className={inputCls}
+            >
+              <option value="student-org">Student organization</option>
+              <option value="department">Department</option>
+              <option value="university">University</option>
+            </select>
+          </div>
+
+          {values.eventType === 'student-org' && (
+            <div>
+              <label className={labelCls}>Organization name *</label>
+              <input
+                type="text"
+                required
+                value={values.organizationName}
+                onChange={set('organizationName')}
+                placeholder="e.g. ACM @ UTA"
+                className={inputCls}
+              />
+            </div>
+          )}
+
+          {values.eventType === 'department' && (
+            <div>
+              <label className={labelCls}>Department name *</label>
+              <input
+                type="text"
+                required
+                value={values.departmentName}
+                onChange={set('departmentName')}
+                placeholder="e.g. Computer Science"
+                className={inputCls}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
@@ -228,7 +309,7 @@ export function EventForm({
       {showSubmitterFields && (
         <div className="pt-2 border-t border-warm-200 dark:border-warm-800">
           <p className="text-xs text-warm-500 dark:text-warm-400 mb-3">
-            Optional — only visible to moderators, in case we need to follow up.
+            Optional (only visible to moderators), in case we need to follow up.
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>

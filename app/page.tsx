@@ -11,7 +11,7 @@ import { Leaderboard } from '@/components/Leaderboard';
 import { LoadingSkeleton } from '@/components/LoadingSkeleton';
 import { ErrorState } from '@/components/ErrorState';
 import { DisclaimerModal } from '@/components/DisclaimerModal';
-import { getFreeFoodEvents } from '@/lib/api';
+import { getFreeFoodEvents, getPastFreeFoodEvents } from '@/lib/api';
 import {
   getApprovedSubmittedEvents,
   getPastSubmittedEvents,
@@ -40,7 +40,7 @@ function getEventDescription(event: AnyEvent): string {
 }
 
 export default function Home() {
-  const [pastEvents, setPastEvents] = useState<SubmittedEvent[]>([]);
+  const [pastEvents, setPastEvents] = useState<AnyEvent[]>([]);
   const [allEvents, setAllEvents] = useState<AnyEvent[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<AnyEvent[]>([]);
   const [selectedOrgs, setSelectedOrgs] = useState<string[]>([]);
@@ -64,7 +64,7 @@ export default function Home() {
       // A MavEngage outage shouldn't blank the whole page if Firebase
       // events loaded fine, so each source falls back independently
       let apiFailed = false;
-      const [api, submitted, past] = await Promise.all([
+      const [api, submitted, past, pastApi] = await Promise.all([
         withTimeout(
           getFreeFoodEvents(60).catch(() => {
             apiFailed = true;
@@ -75,9 +75,10 @@ export default function Home() {
         ),
         withTimeout(getApprovedSubmittedEvents(60), 10000, []),
         withTimeout(getPastSubmittedEvents(6), 10000, []),
+        withTimeout(getPastFreeFoodEvents(6), 10000, []),
       ]);
 
-      setPastEvents(past);
+      setPastEvents([...pastApi, ...past] as AnyEvent[]);
       setAllEvents([...api, ...submitted] as AnyEvent[]);
 
       if (apiFailed && submitted.length === 0) {
